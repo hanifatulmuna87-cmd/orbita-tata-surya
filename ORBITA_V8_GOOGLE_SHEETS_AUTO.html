@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ORBITA — Misi Tata Surya | V7 Mobile Fix</title>
+<style>
+:root{--bg:#040713;--bg2:#0a1230;--panel:#0d1737ee;--panel2:#13204b;--line:#ffffff16;--text:#f8fbff;--muted:#aab8d8;--cyan:#62e9ff;--violet:#9d8cff;--pink:#ff75c8;--yellow:#ffd96a;--green:#70f0aa;--red:#ff7088;--shadow:0 30px 90px #0009}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 10% 10%,#273b8055,transparent 30%),radial-gradient(circle at 90% 10%,#81255b44,transparent 28%),linear-gradient(135deg,#040713,#09102a 55%,#050817);color:var(--text)}button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+#stars,#stars2{position:fixed;inset:0;pointer-events:none;z-index:0}#stars{background-image:radial-gradient(circle,#fff 1px,transparent 1.5px),radial-gradient(circle,#8feaff 1px,transparent 1.5px);background-size:90px 90px,160px 160px;background-position:12px 20px,70px 80px;opacity:.45}#stars2{background-image:radial-gradient(circle,#fff 1px,transparent 1.5px);background-size:210px 210px;background-position:100px 30px;opacity:.22}
+.app{position:relative;z-index:2;width:100%;height:100%}.screen{position:absolute;inset:0;display:none;opacity:0;transform:translateX(30px) scale(.985);transition:opacity .35s ease,transform .45s cubic-bezier(.2,.8,.2,1);overflow:hidden}.screen.active{display:flex;opacity:1;transform:none}.screen.exit{display:flex;opacity:0;transform:translateX(-30px) scale(.985)}
+.wrap{width:min(1180px,calc(100% - 38px));margin:auto}.center{display:flex;align-items:center;justify-content:center}.eyebrow{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-weight:900}.muted{color:var(--muted);line-height:1.65}.grad{background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink));color:transparent;background-clip:text}.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:#62e9ff0d;border:1px solid #62e9ff1c;color:var(--cyan);font-size:.72rem;font-weight:900}
+.btn{border:0;border-radius:14px;padding:12px 18px;font-weight:900;color:#071020;transition:.2s;box-shadow:0 10px 25px #0003}.btn:hover{transform:translateY(-2px)}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important}.quiz-nav .primary{min-width:190px}.primary{background:linear-gradient(135deg,var(--cyan),var(--violet))}.secondary{background:linear-gradient(135deg,var(--yellow),#ff9c6a)}.ghost{background:#ffffff08;border:1px solid var(--line);color:#eef4ff;box-shadow:none}.danger{background:#ff70881a;border:1px solid #ff70883b;color:#ffd9df}
+/* Intro */
+#intro{padding:22px;text-align:center}.intro-card{width:min(920px,100%);padding:38px 28px;border:1px solid var(--line);border-radius:36px;background:linear-gradient(180deg,#101a42ee,#070c20ee);box-shadow:var(--shadow);position:relative;overflow:hidden}.intro-card:before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:#ffd96a;filter:blur(70px);opacity:.08;left:50%;top:50%;transform:translate(-50%,-50%)}.logo-orbit{position:relative;width:140px;height:140px;margin:0 auto 10px}.logo-orbit .sun{position:absolute;width:54px;height:54px;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);background:#ffd96a;box-shadow:0 0 55px #ffd96a99}.logo-orbit .ring{position:absolute;inset:12px;border:1px solid #62e9ff66;border-radius:50%;transform:rotate(-18deg)}.logo-orbit .earth{position:absolute;width:24px;height:24px;border-radius:50%;left:8px;top:50%;transform:translateY(-50%);background:linear-gradient(135deg,#6cecff,#3451d2);box-shadow:0 0 18px #62e9ff88}.intro-card h1{position:relative;font-size:clamp(4rem,12vw,8rem);letter-spacing:-.08em;line-height:.78;margin:0 0 18px}.intro-card p{position:relative;max-width:680px;margin:0 auto 22px}.name-input{position:relative;width:min(440px,100%);padding:14px 16px;border-radius:14px;background:#04091c;border:1px solid var(--line);color:#fff;text-align:center;outline:none}.name-input:focus{border-color:#62e9ff66}.intro-actions{position:relative;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}.mini-note{position:relative;margin-top:16px;color:#7f8fb5;font-size:.78rem}
+/* chrome */
+.chrome{position:absolute;top:0;left:0;right:0;height:72px;z-index:20;background:#05091be8;border-bottom:1px solid var(--line);backdrop-filter:blur(15px)}.chrome-in{width:min(1240px,calc(100% - 24px));height:100%;margin:auto;display:flex;align-items:center;gap:12px}.brand{font-weight:1000;letter-spacing:.13em;color:var(--cyan);white-space:nowrap}.home-btn{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:#ffffff08;color:#fff;font-size:1.1rem}.progress{height:7px;flex:1;max-width:430px;background:#fff1;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--pink));transition:.35s}.cadet{margin-left:auto;color:#c9d3eb;font-size:.85rem}.chrome-actions{display:flex;gap:7px}.icon-btn{width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:#ffffff08;color:#dfe8ff}.slide{height:100%;padding:105px 0 34px}.slide-inner{height:100%;display:flex;flex-direction:column}.slide-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:18px}.slide-head h2{font-size:clamp(2rem,5vw,4.6rem);line-height:.9;letter-spacing:-.05em;margin:8px 0 0}.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center;min-height:0;flex:1}.panel{background:linear-gradient(180deg,#111d45e8,#09102be8);border:1px solid var(--line);border-radius:26px;padding:24px;box-shadow:0 20px 60px #0005}.panel h3{margin:0 0 10px}.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.fact{padding:13px;border-radius:15px;background:#ffffff07;border:1px solid var(--line)}.fact b{display:block;font-size:1.08rem}.fact small{color:var(--muted)}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.nav-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px}.nav-bottom .right{display:flex;gap:8px}
+/* Visuals */
+.space{height:100%;min-height:330px;border:1px solid var(--line);border-radius:26px;background:radial-gradient(circle at 50% 50%,#ffd96a13,transparent 18%),#070d26;position:relative;overflow:hidden}.sun{position:absolute;width:74px;height:74px;border-radius:50%;background:#ffd96a;box-shadow:0 0 70px 25px #ffd96a45}.system-orbit{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:78%;height:52%;border:1px dashed #62e9ff33;border-radius:50%}.planet{position:absolute;border-radius:50%;box-shadow:inset -16px -14px 24px #0007,0 0 20px #fff1}.p1{width:30px;height:30px;background:#aaa;left:23%;top:47%}.p2{width:38px;height:38px;background:#d69b55;left:31%;top:43%}.p3{width:46px;height:46px;background:linear-gradient(135deg,#6cecff,#3150c7);left:41%;top:39%}.p4{width:40px;height:40px;background:#c8563f;left:52%;top:35%}.p5{width:66px;height:66px;background:repeating-linear-gradient(0deg,#d6aa7c 0 8px,#99614b 9px 14px);left:64%;top:28%}.p6{width:60px;height:60px;background:#d8be7c;left:77%;top:21%}.p6:after{content:"";position:absolute;width:92px;height:24px;border:5px solid #d7c487;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-12deg)}.p7{width:48px;height:48px;background:#8ad9d1;left:77%;top:52%}.p8{width:46px;height:46px;background:#4c73d8;left:67%;top:66%}.planet-label{position:absolute;font-size:.66rem;color:#aeb9d6}.label3{left:40%;top:55%}
+.earth-stage{height:100%;min-height:330px;border:1px solid var(--line);border-radius:26px;background:#070d26;position:relative;overflow:hidden}.earth-stage .sun{left:20%;top:50%;transform:translate(-50%,-50%);width:70px;height:70px}.earth-big{position:absolute;width:120px;height:120px;border-radius:50%;left:58%;top:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#6cecff,#3150c7);box-shadow:inset -28px -20px 35px #0007,0 0 30px #62e9ff44}.axis{position:absolute;height:165px;width:4px;background:#ffffff88;left:58%;top:50%;transform:translate(-50%,-50%) rotate(23.5deg);border-radius:4px}.half{position:absolute;width:60px;height:120px;left:58%;top:50%;transform:translate(-100%,-50%);border-radius:60px 0 0 60px;background:#ffffff18}.half2{position:absolute;width:60px;height:120px;left:58%;top:50%;transform:translate(0,-50%);border-radius:0 60px 60px 0;background:#000b}.tag{position:absolute;padding:7px 9px;border-radius:10px;background:#0b1536dd;border:1px solid var(--line);font-size:.72rem}.tag.day{left:66%;top:30%}.tag.night{left:66%;top:67%}
+.orbit-stage{height:100%;min-height:330px;border:1px solid var(--line);border-radius:26px;background:#070d26;position:relative;overflow:hidden}.orbit-ring{position:absolute;width:74%;height:58%;border:1px dashed #62e9ff55;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}.orbit-ring:before{content:"";position:absolute;inset:-25px;border:1px dashed #9d8cff22;border-radius:50%}.orbit-sun{position:absolute;width:68px;height:68px;border-radius:50%;background:#ffd96a;box-shadow:0 0 65px 20px #ffd96a44;left:50%;top:50%;transform:translate(-50%,-50%)}.orbit-earth2{position:absolute;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6cecff,#3150c7);left:13%;top:38%;box-shadow:0 0 20px #62e9ff55}.orbit-mark{position:absolute;width:8px;height:8px;border-radius:50%;background:#ff75c8;box-shadow:0 0 12px #ff75c8;left:26%;top:20%}.season-card{height:100%;min-height:330px;border:1px solid var(--line);border-radius:26px;background:#070d26;position:relative;overflow:hidden}.season-card .sun{width:60px;height:60px;left:50%;top:12%;transform:translateX(-50%)}.season-earth{position:absolute;width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#6cecff,#3150c7);left:50%;top:57%;transform:translate(-50%,-50%)}.season-axis{position:absolute;height:130px;width:4px;background:#fff9;left:50%;top:57%;transform:translate(-50%,-50%) rotate(23.5deg);border-radius:4px}.season-rays{position:absolute;width:75%;height:180px;left:50%;top:30%;transform:translateX(-50%);background:repeating-linear-gradient(105deg,transparent 0 18px,#ffd96a26 19px 21px);clip-path:polygon(0 20%,100% 0,100% 100%,0 80%)}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.compare-box{padding:20px;border-radius:22px;border:1px solid var(--line);background:#ffffff06}.compare-box.rot{border-color:#62e9ff33}.compare-box.rev{border-color:#ff75c833}.timeline{display:flex;gap:8px;align-items:center;margin-top:16px}.timeline i{height:8px;flex:1;border-radius:99px;background:#fff1}.timeline i.on{background:linear-gradient(90deg,var(--cyan),var(--violet))}
+/* quiz */
+.quiz-wrap{display:grid;grid-template-columns:280px minmax(0,1fr);gap:18px;flex:1;min-height:0}.quiz-side{display:flex;flex-direction:column;gap:12px}.score-card{padding:20px;border:1px solid var(--line);border-radius:22px;background:#101a3fe8}.score{font-size:3.6rem;font-weight:1000;color:var(--cyan);line-height:1}.q-card{position:relative;min-height:0;border:1px solid var(--line);border-radius:26px;background:linear-gradient(180deg,#14204ae8,#09102be8);padding:28px 100px 28px 28px;display:flex;flex-direction:column;box-shadow:var(--shadow);overflow:visible}.q-top{display:flex;justify-content:space-between;color:#9aa8c8;font-size:.8rem}.q-card h3{font-size:clamp(1.3rem,2.4vw,2rem);line-height:1.35;margin:20px 0 16px}.options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.option{padding:16px;text-align:left;border-radius:15px;border:1px solid var(--line);background:#ffffff07;color:#fff;transition:.2s}.option:hover{border-color:#62e9ff66;background:#62e9ff08;transform:translateY(-2px)}.option.correct{border-color:#70f0aa;background:#70f0aa12}.option.wrong{border-color:#ff7088;background:#ff708812}.option:disabled{cursor:default}.feedback{margin-top:14px;padding:14px;border-radius:14px;display:none;line-height:1.55}.feedback.show{display:block}.quiz-nav{margin-top:16px;padding-top:12px;display:flex;justify-content:flex-start;align-items:center;gap:8px}.next-zone{position:absolute;right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;width:76px;z-index:5}.next-icon{width:64px;height:64px;border-radius:50%;border:2px solid rgba(93,231,255,.7);background:linear-gradient(135deg,#17305f,#5b3dbb);color:#fff;font-size:2rem;font-weight:1000;cursor:pointer;box-shadow:0 0 0 6px rgba(93,231,255,.08),0 10px 35px rgba(0,0,0,.28);transition:.2s;display:grid;place-items:center}.next-icon:hover:not(:disabled){transform:translateX(4px) scale(1.05);box-shadow:0 0 0 8px rgba(93,231,255,.12),0 12px 40px rgba(0,0,0,.35)}.next-icon:active:not(:disabled){transform:scale(.95)}.next-icon:disabled{opacity:.28;cursor:not-allowed;filter:grayscale(.8);transform:none}.next-icon.ready{animation:nextPulse 1.2s infinite}.next-hint{font-size:.68rem;color:#9aa9cf;text-align:center;line-height:1.25;max-width:100px}.badge{padding:8px 10px;border-radius:10px;background:#fff1;color:#7180a5;font-size:.75rem}.badge.on{color:var(--green);background:#70f0aa12;border:1px solid #70f0aa33}.result{padding:26px;border-radius:26px;border:1px solid var(--line);background:#101a3fe8;text-align:center}.result .big{font-size:4rem;font-weight:1000;color:var(--yellow)}
+/* teacher */
+.teacher-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:18px;flex:1;min-height:0}.teacher-panel{padding:22px;border:1px solid var(--line);border-radius:24px;background:#101a3fe8;overflow:auto}.field{display:grid;gap:7px;margin-bottom:12px}.field label{font-size:.78rem;color:#aab8d8;font-weight:800}.field input{padding:12px 13px;border-radius:12px;border:1px solid var(--line);background:#050a20;color:#fff;outline:none}.field input:focus{border-color:#62e9ff66}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:15px}.table{width:100%;border-collapse:collapse;font-size:.82rem}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left}.table th{color:#9faed0}.teacher-note{padding:12px;border-left:3px solid var(--yellow);background:#ffd96a08;border-radius:10px;color:#d8e1f4;line-height:1.55;font-size:.8rem}
+/* modal/help */
+.modal{position:absolute;inset:0;background:#000b;z-index:50;display:none;align-items:center;justify-content:center;padding:20px}.modal.open{display:flex}.modal-card{width:min(560px,100%);padding:26px;border-radius:24px;border:1px solid var(--line);background:#111d45;box-shadow:var(--shadow)}
+@media(max-width:900px){.content-grid,.teacher-grid{grid-template-columns:1fr}.quiz-wrap{grid-template-columns:1fr}.quiz-side{display:grid;grid-template-columns:1fr 1fr}.space,.earth-stage,.orbit-stage,.season-card{min-height:250px}.slide{padding-top:92px}.options{grid-template-columns:1fr}.cadet{display:none}.q-card{padding:24px 24px 96px}.next-zone{right:18px;top:auto;bottom:18px;transform:none;flex-direction:row;width:auto}.next-hint{max-width:150px;text-align:left}}
+@media(max-width:620px){.facts{grid-template-columns:1fr}.compare-grid{grid-template-columns:1fr}.quiz-side{grid-template-columns:1fr}.chrome .progress{max-width:100px}.brand{font-size:.8rem}.slide-head h2{font-size:2.25rem}.panel{padding:18px}.intro-card{padding:28px 18px}}
+
+
+
+/* =========================================================
+   ORBITA V6 — RESPONSIVE MOBILE PATCH
+   Optimized for phones 320px–768px, portrait & landscape.
+   ========================================================= */
+html{font-size:16px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,.btn,.option,.icon-btn,.home-btn,.next-icon{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+@media (max-width: 768px){
+  html,body{width:100%;min-width:0;height:100%;overflow:hidden}
+  body{overscroll-behavior:none}
+  .app{width:100%;height:100%;min-width:0}
+  .screen.active{display:block;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+  .screen.active.center{display:flex;overflow-y:auto}
+
+  /* Header: compact and always visible */
+  .chrome{height:62px;position:absolute}
+  .chrome-in{width:100%;padding:0 10px;gap:7px}
+  .home-btn,.icon-btn{width:38px;height:38px;min-width:38px;border-radius:11px}
+  .brand{font-size:.78rem;letter-spacing:.11em}
+  .progress{height:6px;min-width:34px;max-width:none;flex:1}
+  .cadet{display:none}
+  .chrome-actions{gap:5px}
+  .chrome-actions .icon-btn{font-size:.95rem}
+
+  /* Intro */
+  #intro{padding:12px;align-items:center;justify-content:center}
+  .intro-card{width:100%;padding:28px 16px 24px;border-radius:26px;max-height:none}
+  .logo-orbit{width:112px;height:112px}
+  .intro-card h1{font-size:clamp(4rem,24vw,6rem);margin-bottom:14px}
+  .intro-card p{font-size:.9rem;line-height:1.55}
+  .name-input{width:100%;min-height:48px;font-size:16px}
+  .intro-actions{display:grid;grid-template-columns:1fr;gap:9px}
+  .intro-actions .btn{width:100%;min-height:48px}
+
+  /* Every slide becomes a real mobile page, not a clipped desktop canvas */
+  .slide{height:auto;min-height:100dvh;padding:82px 0 22px}
+  .slide-inner{width:100%;height:auto;min-height:calc(100dvh - 104px);display:flex;flex-direction:column}
+  .wrap{width:calc(100% - 20px);max-width:none}
+  .slide-head{align-items:flex-start;flex-direction:column;gap:8px;margin-bottom:14px}
+  .slide-head h2{font-size:clamp(2rem,10vw,3.15rem);line-height:.95;word-break:normal}
+  .pill{font-size:.64rem;padding:6px 9px;max-width:100%;white-space:normal}
+  .eyebrow{font-size:.65rem}
+
+  /* Panels and grids */
+  .content-grid,.teacher-grid{grid-template-columns:1fr;gap:12px;align-items:stretch;flex:none}
+  .panel{padding:16px;border-radius:20px;min-width:0}
+  .panel h3{font-size:1.05rem}
+  .muted{font-size:.9rem;line-height:1.55}
+  .facts{grid-template-columns:1fr 1fr!important;gap:8px}
+  .fact{padding:11px;border-radius:13px;min-width:0}
+  .fact b{font-size:.92rem;overflow-wrap:anywhere}
+  .fact small{font-size:.72rem;line-height:1.35}
+  .actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .actions .btn,.nav-bottom .btn{width:100%;min-height:46px}
+  .nav-bottom{margin-top:14px;padding-bottom:4px;flex-direction:column;align-items:stretch;gap:10px}
+  .nav-bottom .right{display:grid;grid-template-columns:1fr;gap:8px;width:100%}
+  .nav-bottom>span{font-size:.76rem;line-height:1.45}
+
+  /* Visual areas */
+  .space,.earth-stage,.orbit-stage,.season-card{height:250px;min-height:250px;max-height:250px;border-radius:20px}
+  .system-orbit{width:86%;height:48%}
+  .earth-big{width:96px;height:96px}
+  .axis{height:132px;left:58%}
+  .half,.half2{height:96px;width:48px}
+  .tag{font-size:.65rem}
+  .orbit-ring{width:82%;height:56%}
+  .season-earth{width:74px;height:74px}
+  .season-axis{height:110px}
+
+  /* Quiz: compact sidebar, full-width question card */
+  .quiz-wrap{display:flex;flex-direction:column;gap:10px;flex:none;min-height:0}
+  .quiz-side{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .score-card{padding:12px;border-radius:17px;min-width:0}
+  .score{font-size:2.35rem}
+  .score-card .eyebrow{font-size:.58rem}
+  .badge{font-size:.62rem;padding:6px 7px}
+  .timeline{gap:4px;margin-top:9px}
+  .timeline i{height:5px}
+  .q-card{width:100%;min-height:0;height:auto;padding:17px 16px 16px;border-radius:20px;overflow:visible}
+  .q-top{font-size:.67rem}
+  .q-card h3{font-size:clamp(1.08rem,5.4vw,1.45rem);line-height:1.35;margin:13px 0 12px;overflow-wrap:anywhere}
+  .q-card>.btn{width:100%;min-height:44px;font-size:.82rem}
+  .options{grid-template-columns:1fr;gap:8px;margin-top:10px}
+  .option{width:100%;min-height:48px;padding:13px 12px;font-size:.9rem;border-radius:13px;line-height:1.35}
+  .feedback{font-size:.82rem;padding:11px;margin-top:10px}
+  .quiz-nav{margin-top:12px;padding-top:10px;display:flex;justify-content:space-between;align-items:center;min-height:64px}
+  .quiz-nav>#homeQuizBtn{width:auto;min-width:92px;min-height:44px}
+  .next-zone{position:relative;right:auto;top:auto;bottom:auto;transform:none;display:flex;flex-direction:row;align-items:center;justify-content:flex-end;gap:7px;width:auto;margin-left:auto;z-index:5}
+  .next-icon{width:54px;height:54px;min-width:54px;font-size:1.65rem}
+  .next-hint{max-width:110px;font-size:.62rem;text-align:right}
+  .next-icon.ready{animation:nextPulse 1.2s infinite}
+
+  /* Results / teacher */
+  .result{width:100%;padding:20px 14px;border-radius:20px}
+  .result .big{font-size:3rem}
+  .teacher-grid{flex:none}
+  .teacher-panel{padding:15px;border-radius:18px;overflow:visible}
+  .table-wrap{max-width:100%;overflow-x:auto}
+  .table{min-width:520px}
+
+  /* Modals */
+  .modal{padding:12px}
+  .modal-card{padding:18px;border-radius:20px;max-height:90dvh;overflow:auto}
+}
+
+@media (max-width: 480px){
+  .chrome-in{padding:0 7px}
+  .home-btn,.icon-btn{width:35px;height:35px;min-width:35px}
+  .brand{font-size:.72rem}
+  .progress{max-width:none}
+  .chrome-actions{gap:3px}
+  .slide{padding-top:76px}
+  .slide-inner{min-height:calc(100dvh - 98px)}
+  .wrap{width:calc(100% - 14px)}
+  .slide-head h2{font-size:clamp(1.85rem,9.5vw,2.7rem)}
+  .panel{padding:14px}
+  .facts{grid-template-columns:1fr 1fr!important}
+  .fact b{font-size:.84rem}
+  .fact small{font-size:.68rem}
+  .quiz-side{grid-template-columns:1fr 1fr}
+  .score-card{padding:10px}
+  .score{font-size:2rem}
+  .badge{display:block;font-size:.58rem;padding:5px 6px}
+  .q-card{padding:14px 12px}
+  .q-card h3{font-size:1.05rem}
+  .option{font-size:.84rem;min-height:46px;padding:11px}
+  .next-hint{display:none}
+  .next-icon{width:52px;height:52px;min-width:52px}
+  .quiz-nav>#homeQuizBtn{min-width:86px;padding:10px 12px}
+}
+
+@media (max-height: 700px) and (orientation: landscape){
+  .chrome{height:54px}
+  .slide{padding-top:66px;padding-bottom:14px}
+  .slide-inner{min-height:calc(100dvh - 80px)}
+  .slide-head{margin-bottom:8px}
+  .slide-head h2{font-size:1.8rem}
+  .space,.earth-stage,.orbit-stage,.season-card{height:190px;min-height:190px;max-height:190px}
+  .quiz-wrap{flex-direction:row;align-items:stretch}
+  .quiz-side{display:flex;width:145px;flex:0 0 145px}
+  .q-card{flex:1}
+  .options{grid-template-columns:1fr 1fr}
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+
+
+/* =========================================================
+   ORBITA V7 — FULL MOBILE LAYOUT FIX
+   Target: iPhone/Android 320px–768px, portrait & landscape.
+   Keeps each screen as a separate slide, but allows the
+   content INSIDE a slide to scroll when the phone is short.
+   ========================================================= */
+
+@supports (padding: env(safe-area-inset-top)) {
+  .chrome { padding-top: env(safe-area-inset-top); height: calc(62px + env(safe-area-inset-top)); }
+}
+
+@media (max-width: 768px) {
+  html, body {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .app {
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+  }
+
+  /* Each slide remains a slide, but the slide itself can scroll
+     if a small phone cannot fit all content at once. */
+  .screen {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .screen.active {
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .screen.active.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chrome {
+    height: 62px;
+    z-index: 100;
+  }
+
+  .chrome-in {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 8px;
+    gap: 6px;
+  }
+
+  .home-btn, .icon-btn {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+  }
+
+  .brand {
+    flex: 0 0 auto;
+    font-size: .78rem;
+    letter-spacing: .10em;
+  }
+
+  .progress {
+    flex: 1 1 auto;
+    min-width: 20px;
+    max-width: none;
+  }
+
+  .cadet { display: none; }
+
+  .chrome-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 4px;
+  }
+
+  /* MAIN SLIDE STRUCTURE */
+  .slide {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 100dvh;
+    padding: 78px 0 22px;
+  }
+
+  .slide-inner {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: calc(100dvh - 100px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .wrap {
+    width: calc(100% - 20px);
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .slide-head {
+    width: 100%;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .slide-head > div {
+    min-width: 0;
+  }
+
+  .slide-head h2 {
+    font-size: clamp(1.65rem, 8vw, 2.6rem);
+    line-height: .98;
+    overflow-wrap: anywhere;
+  }
+
+  .pill {
+    flex: 0 0 auto;
+    max-width: 45%;
+    font-size: .62rem;
+    padding: 6px 8px;
+    text-align: center;
+  }
+
+  /* CRITICAL: stop the desktop flex/grid from forcing
+     the bottom navigation over the content. */
+  .content-grid {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 0 0 auto;
+    min-height: 0;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .content-grid > * {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+    border-radius: 20px;
+    overflow: visible;
+  }
+
+  .panel p, .muted {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .facts {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .fact {
+    padding: 11px;
+  }
+
+  .actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .actions .btn {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  /* The mission-control space becomes a compact visual,
+     instead of pushing navigation off-screen. */
+  .space, .earth-stage, .orbit-stage, .season-card {
+    width: 100%;
+    height: 220px;
+    min-height: 220px;
+    max-height: 260px;
+    border-radius: 20px;
+  }
+
+  /* BOTTOM NAVIGATION: always below the content, never overlaying it. */
+  .nav-bottom {
+    width: 100%;
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 9px;
+    margin-top: 14px;
+    padding: 0 0 6px;
+  }
+
+  .nav-bottom > .muted {
+    order: 2;
+    font-size: .68rem;
+    text-align: center;
+    margin: 0;
+  }
+
+  .nav-bottom .right {
+    order: 1;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 8px;
+  }
+
+  .nav-bottom .right .btn {
+    width: 100%;
+    min-height: 50px;
+    padding: 11px 10px;
+    font-size: .82rem;
+  }
+
+  /* Prevent any absolute next button from being clipped. */
+  .next-zone {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    width: auto;
+    z-index: 30;
+  }
+
+  .next-icon {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    font-size: 1.55rem;
+  }
+
+  .next-hint {
+    display: none;
+  }
+
+  /* QUIZ: one answer per row, generous touch targets. */
+  .quiz-wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    min-height: 0;
+    gap: 10px;
+  }
+
+  .quiz-side {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .score-card {
+    min-width: 0;
+    padding: 11px;
+    border-radius: 16px;
+  }
+
+  .score {
+    font-size: 2.15rem;
+  }
+
+  .q-card {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 0;
+    padding: 16px 72px 16px 14px;
+    border-radius: 20px;
+    overflow: visible;
+  }
+
+  .q-card h3 {
+    font-size: clamp(1.08rem, 5.5vw, 1.42rem);
+    line-height: 1.35;
+    margin: 12px 0;
+    overflow-wrap: anywhere;
+  }
+
+  .options {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .option {
+    width: 100%;
+    min-height: 50px;
+    padding: 13px 12px;
+    font-size: .92rem;
+    line-height: 1.35;
+    text-align: left;
+  }
+
+  .feedback {
+    width: 100%;
+    margin-top: 9px;
+    font-size: .82rem;
+    line-height: 1.45;
+  }
+
+  .quiz-nav {
+    width: 100%;
+    min-height: 58px;
+    margin-top: 9px;
+    padding-top: 8px;
+  }
+
+  .quiz-nav #homeQuizBtn {
+    min-height: 46px;
+    min-width: 84px;
+  }
+
+  /* Result / teacher */
+  .result {
+    width: 100%;
+    max-width: 100%;
+    padding: 18px 12px;
+  }
+
+  .result .big {
+    font-size: 2.8rem;
+  }
+
+  .teacher-grid {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 0 0 auto;
+  }
+
+  .teacher-panel {
+    width: 100%;
+    padding: 14px;
+    border-radius: 18px;
+    overflow: visible;
+  }
+
+  .table-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 520px;
+  }
+
+  .modal {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .modal-card {
+    width: 100%;
+    max-width: 100%;
+    max-height: 88dvh;
+    padding: 16px;
+    overflow: auto;
+  }
+
+  /* Intro screen */
+  #intro {
+    width: 100%;
+    min-height: 100dvh;
+    padding: 18px 10px;
+    overflow-y: auto;
+  }
+
+  .intro-card {
+    width: 100%;
+    max-width: 560px;
+    padding: 24px 16px;
+    border-radius: 24px;
+  }
+
+  .intro-card h1 {
+    font-size: clamp(3rem, 17vw, 5.2rem);
+  }
+
+  .intro-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .intro-actions .btn {
+    width: 100%;
+    min-height: 50px;
+  }
+}
+
+@media (max-width: 390px) {
+  .wrap { width: calc(100% - 14px); }
+  .chrome-in { padding: 0 5px; gap: 4px; }
+  .home-btn, .icon-btn { width: 34px; height: 34px; min-width: 34px; }
+  .brand { font-size: .70rem; }
+  .slide { padding-top: 76px; }
+  .panel { padding: 14px; }
+  .slide-head h2 { font-size: 1.72rem; }
+  .pill { font-size: .56rem; max-width: 48%; }
+  .q-card { padding-right: 66px; }
+  .next-zone { right: 6px; }
+  .next-icon { width: 50px; height: 50px; min-width: 50px; }
+  .nav-bottom .right .btn { font-size: .76rem; padding: 10px 7px; }
+}
+
+@media (max-height: 700px) and (orientation: landscape) and (max-width: 900px) {
+  .slide { padding-top: 66px; padding-bottom: 12px; }
+  .slide-inner { min-height: calc(100dvh - 78px); }
+  .content-grid { flex-direction: row; }
+  .content-grid > * { flex: 1 1 0; }
+  .space, .earth-stage, .orbit-stage, .season-card {
+    height: 180px;
+    min-height: 180px;
+  }
+  .nav-bottom {
+    flex-direction: row;
+    align-items: center;
+  }
+  .nav-bottom .right { width: auto; }
+  .nav-bottom > .muted { order: 1; text-align: left; }
+  .nav-bottom .right { order: 2; }
+}
+
+</style>
+</head>
+<body>
+<div id="stars"></div><div id="stars2"></div>
+<div class="app">
+<!-- INTRO -->
+<section id="intro" class="screen active center">
+ <div class="intro-card">
+  <div class="eyebrow">✦ ORBITA ACADEMY • MEDIA PEMBELAJARAN DIGITAL</div>
+  <div class="logo-orbit"><div class="ring"></div><div class="sun"></div><div class="earth"></div></div>
+  <h1 class="grad">ORBITA</h1>
+  <p class="muted">Misi Tata Surya — jelajahi planet, amati rotasi dan revolusi Bumi, pahami siang–malam dan musim, lalu selesaikan 10 tantangan kuis.</p>
+  <input id="nameInput" class="name-input" maxlength="30" placeholder="Masukkan nama Kadet..." autocomplete="off">
+  <div class="intro-actions"><button class="btn primary" onclick="startMission()">🚀 Mulai Misi</button><button class="btn ghost" onclick="demoMode()">Lihat Demo</button></div>
+  <div class="mini-note">Mode siswa • Mode guru • suara • animasi • 12 slide materi • 10 slide kuis</div>
+ </div>
+</section>
+
+<div id="app" class="hidden">
+<header class="chrome"><div class="chrome-in"><button class="home-btn" title="Home / Peta Misi" onclick="goHome()">⌂</button><div class="brand">ORBITA</div><div class="progress"><i id="progressBar"></i></div><div class="cadet">Kadet: <b id="cadetName">—</b></div><div class="chrome-actions"><button class="icon-btn" title="Suara" onclick="toggleSound()" id="soundBtn">🔊</button><button class="icon-btn" title="Bantuan" onclick="openHelp()">?</button><button class="icon-btn" title="Mode Guru" onclick="openTeacher()">♙</button></div></div></header>
+
+<!-- HOME -->
+<section id="home" class="screen active slide"><div class="wrap slide-inner">
+ <div class="slide-head"><div><div class="eyebrow">MISSION CONTROL</div><h2>Selamat datang, <span class="grad" id="homeName">Kadet</span>.</h2></div><span class="pill">12 MATERI + 10 KUIS</span></div>
+ <div class="content-grid">
+  <div class="panel"><h3>🗺️ Peta Misi ORBITA</h3><p class="muted">Gunakan tombol <b>Selanjutnya</b> untuk berpindah satu layar penuh. Tidak ada scroll antar-slide. Ikon <b>⌂</b> selalu membawa kamu kembali ke halaman utama.</p>
+   <div class="facts"><div class="fact"><b>12</b><small>slide materi</small></div><div class="fact"><b>10</b><small>slide kuis</small></div><div class="fact"><b>∞</b><small>ulang latihan</small></div></div>
+   <div class="actions"><button class="btn primary" onclick="go(1)">🚀 Mulai Materi</button><button class="btn secondary" onclick="go(13)">🎯 Langsung Kuis</button></div>
+  </div>
+  <div class="space"><div class="sun" style="left:50%;top:50%;transform:translate(-50%,-50%)"></div><div class="system-orbit"></div><div class="planet p1"></div><div class="planet p2"></div><div class="planet p3"></div><div class="planet p4"></div><div class="planet p5"></div><div class="planet p6"></div><div class="planet p7"></div><div class="planet p8"></div><span class="planet-label" style="left:41%;top:57%">🌍 Bumi</span></div>
+ </div>
+ <div class="nav-bottom"><span class="muted">Tip: tekan <b>←</b>/<b>→</b> pada keyboard untuk berpindah slide.</span><div class="right"><button class="btn ghost" onclick="openTeacher()">♙ Kontrol Guru</button><button class="btn primary" onclick="go(1)">Selanjutnya →</button></div></div>
+ </div></section>
+
+<!-- 12 MATERIAL SLIDES -->
+<section id="m1" class="screen slide" data-index="1"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 01 / 12</div><h2>Kenalan dengan <span class="grad">Tata Surya</span></h2></div><span class="pill">MATAHARI = PUSAT</span></div><div class="content-grid"><div class="panel"><h3>☀️ Apa itu tata surya?</h3><p class="muted">Tata surya terdiri atas Matahari dan benda-benda langit yang bergerak mengitarinya. Untuk belajar, kita gunakan model visual agar urutan dan hubungan geraknya lebih mudah diamati.</p><div class="callout" style="padding:14px;border-left:3px solid var(--yellow);background:#ffd96a08;border-radius:10px">⚠️ Model tata surya di media ini <b>tidak selalu berskala</b> dalam ukuran dan jarak.</div></div><div class="space"><div class="sun" style="left:50%;top:50%;transform:translate(-50%,-50%)"></div><div class="system-orbit"></div><div class="planet p3"></div><div class="planet p5"></div></div></div><div class="nav-bottom"><span class="muted">Amati: apa yang berada di pusat model?</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(2)">Selanjutnya →</button></div></div></div></section>
+
+<section id="m2" class="screen slide" data-index="2"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 02 / 12</div><h2>8 Planet dalam <span class="grad">Urutan</span></h2></div><span class="pill">DEKAT → JAUH</span></div><div class="panel" style="flex:1;overflow:auto"><div class="facts" style="grid-template-columns:repeat(4,1fr)"><div class="fact"><b>1. Merkurius</b><small>paling dekat</small></div><div class="fact"><b>2. Venus</b><small>planet kedua</small></div><div class="fact"><b>3. Bumi</b><small>planet kita</small></div><div class="fact"><b>4. Mars</b><small>planet merah</small></div><div class="fact"><b>5. Jupiter</b><small>planet terbesar</small></div><div class="fact"><b>6. Saturnus</b><small>bercincin</small></div><div class="fact"><b>7. Uranus</b><small>planet es</small></div><div class="fact"><b>8. Neptunus</b><small>paling jauh</small></div></div><p class="muted" style="margin-top:18px">🧠 Tantangan cepat: coba sebutkan delapan planet tanpa melihat urutan di atas.</p></div><div class="nav-bottom"><span class="muted">Urutan: Merkurius → Venus → Bumi → Mars → Jupiter → Saturnus → Uranus → Neptunus.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(3)">Selanjutnya →</button></div></div></div></section>
+
+<section id="m3" class="screen slide" data-index="3"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 03 / 12</div><h2>Studio <span class="grad">Planet</span></h2></div><span class="pill">KLIK UNTUK FAKTA</span></div><div class="content-grid"><div class="panel"><h3>🪐 Jelajahi kartu planet</h3><p class="muted">Pilih planet untuk membuka fakta singkat. Gunakan ini sebagai latihan mengamati ciri dan posisi planet.</p><div class="facts"><div class="fact" onclick="planetInfo('Merkurius','Planet paling dekat dengan Matahari.')"><b>☿</b><small>Merkurius</small></div><div class="fact" onclick="planetInfo('Venus','Planet kedua dari Matahari.')"><b>♀</b><small>Venus</small></div><div class="fact" onclick="planetInfo('Bumi','Planet tempat kita hidup.')"><b>🌍</b><small>Bumi</small></div><div class="fact" onclick="planetInfo('Mars','Sering dikenal sebagai planet merah.')"><b>🔴</b><small>Mars</small></div><div class="fact" onclick="planetInfo('Jupiter','Planet terbesar dalam tata surya.')"><b>🟠</b><small>Jupiter</small></div><div class="fact" onclick="planetInfo('Saturnus','Dikenal dengan sistem cincin yang menonjol.')"><b>🪐</b><small>Saturnus</small></div></div></div><div class="space"><div class="sun" style="left:20%;top:50%;transform:translate(-50%,-50%)"></div><div class="planet p3" style="left:55%;top:40%"></div><div class="planet p6" style="left:75%;top:60%"></div></div></div><div class="nav-bottom"><span class="muted">Klik kartu di kiri untuk membuka fakta.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(4)">Selanjutnya →</button></div></div></div></section>
+
+<section id="m4" class="screen slide" data-index="4"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 04 / 12</div><h2>Apa itu <span class="grad">Rotasi Bumi?</span></h2></div><span class="pill">≈ 24 JAM</span></div><div class="content-grid"><div class="panel"><h3>🔄 Berputar pada poros</h3><p class="muted">Rotasi Bumi adalah gerak Bumi berputar pada porosnya. Satu rotasi berlangsung sekitar 24 jam.</p><div class="facts"><div class="fact"><b>24 jam</b><small>durasi sederhana</small></div><div class="fact"><b>Poros</b><small>tempat Bumi berputar</small></div><div class="fact"><b>Siang–malam</b><small>fenomena terkait</small></div></div><div class="actions"><button class="btn primary" onclick="toggleRotation()" id="rotBtn">▶ Putar Bumi</button><button class="btn ghost" onclick="resetRotation()">↺ Reset</button></div></div><div class="earth-stage"><div class="sun"></div><div class="earth-big" id="rotEarth"></div><div class="axis"></div><div class="half"></div><div class="half2"></div><div class="tag day">☀️ siang</div><div class="tag night">🌙 malam</div></div></div><div class="nav-bottom"><span class="muted">Amati bagian Bumi yang terang dan gelap.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(5)">Selanjutnya →</button></div></div></div></section>
+
+<section id="m5" class="screen slide" data-index="5"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 05 / 12</div><h2>Siang dan <span class="grad">Malam</span></h2></div><span class="pill">SEBAB–AKIBAT</span></div><div class="content-grid"><div class="panel"><h3>🌗 Mengapa berganti?</h3><p class="muted">Bagian Bumi yang menghadap Matahari mengalami siang, sedangkan bagian yang membelakangi Matahari mengalami malam. Karena Bumi berotasi, suatu lokasi bergantian menghadap dan membelakangi Matahari.</p><div class="callout" style="padding:14px;border-left:3px solid var(--green);background:#70f0aa08;border-radius:10px">💡 Bukan karena Matahari mengelilingi Bumi setiap hari.</div></div><div class="earth-stage"><div class="sun"></div><div class="earth-big" style="left:58%"></div><div class="half"></div><div class="half2"></div><div class="tag day">Terang → siang</div><div class="tag night">Gelap → malam</div></div></div><div class="nav-bottom"><span class="muted">Coba jelaskan dengan kalimat sebab → akibat.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(6)">Selanjutnya →</button></div></div></div></section>
+
+<section id="m6" class="screen slide" data-index="6"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 06 / 12</div><h2>Apa itu <span class="grad">Revolusi Bumi?</span></h2></div><span class="pill">≈ 365¼ HARI</span></div><div class="content-grid"><div class="panel"><h3>☀️ Mengelilingi Matahari</h3><p class="muted">Revolusi Bumi adalah gerak Bumi mengelilingi Matahari pada orbitnya. Satu kali revolusi berlangsung sekitar 365¼ hari dan menjadi dasar satu tahun.</p><div class="facts"><div class="fact"><b>365¼ hari</b><small>durasi sederhana</small></div><div class="fact"><b>Orbit</b><small>lintasan gerak</small></div><div class="fact"><b>1 tahun</b><small>dasar kalender</small></div></div><div class="actions"><button class="btn primary" onclick="toggleOrbit()" id="orbBtn">▶ Jalankan Orbit</button><button class="btn ghost" onclick="resetOrbit()">↺ Reset</button></div></div><div class="orbit-stage"><div class="orbit-ring"></div><div class="orbit-sun"></div><div class="orbit-earth2" id="orbitEarth"></div><div class="orbit-mark"></div></div></div><div class="nav-bottom"><span class="muted">Perhatikan: revolusi berbeda dari rotasi.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(7)">Selanjutnya →</button></div></div></div></section>
+
+<section id="m7" class="screen slide" data-index="7"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 07 / 12</div><h2>Rotasi vs <span class="grad">Revolusi</span></h2></div><span class="pill">BANDINGKAN</span></div><div class="compare-grid" style="flex:1;min-height:0"><div class="compare-box rot"><h3>🔄 ROTASI</h3><p class="muted">Bumi <b>berputar pada porosnya</b>.</p><div class="facts"><div class="fact"><b>≈ 24 jam</b><small>durasi</small></div><div class="fact"><b>Siang–malam</b><small>fenomena</small></div></div></div><div class="compare-box rev"><h3>☀️ REVOLUSI</h3><p class="muted">Bumi <b>mengelilingi Matahari</b> pada orbitnya.</p><div class="facts"><div class="fact"><b>≈ 365¼ hari</b><small>durasi</small></div><div class="fact"><b>Satu tahun</b><small>dasar kalender</small></div></div></div></div><div class="nav-bottom"><span class="muted">Keduanya berlangsung bersamaan, tetapi jenis geraknya berbeda.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(8)">Selanjutnya →</button></div></div></div></section>
+
+<section id="m8" class="screen slide" data-index="8"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 08 / 12</div><h2>Kemiringan <span class="grad">Sumbu Bumi</span></h2></div><span class="pill">23,5°</span></div><div class="content-grid"><div class="panel"><h3>📐 Mengapa kemiringan penting?</h3><p class="muted">Revolusi Bumi bersama kemiringan sumbu Bumi menyebabkan perubahan sudut dan lama penyinaran Matahari sepanjang tahun. Hal ini berkontribusi pada perubahan musim di wilayah yang mengalaminya.</p><div class="facts"><div class="fact"><b>23,5°</b><small>kemiringan model</small></div><div class="fact"><b>Sudut cahaya</b><small>berubah sepanjang tahun</small></div><div class="fact"><b>Lama siang</b><small>dapat berubah</small></div></div></div><div class="season-card"><div class="sun"></div><div class="season-rays"></div><div class="season-earth"></div><div class="season-axis"></div></div></div><div class="nav-bottom"><span class="muted">Musim tidak cukup dijelaskan hanya dengan “Bumi lebih dekat atau lebih jauh”.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(9)">Selanjutnya →</button></div></div></div></section>
+
+<section id="m9" class="screen slide" data-index="9"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 09 / 12</div><h2>Musim dan <span class="grad">Letak Geografis</span></h2></div><span class="pill">KONTEKS INDONESIA</span></div><div class="content-grid"><div class="panel"><h3>🌦️ Tidak semua wilayah punya pola musim yang sama</h3><p class="muted">Pola musim berbeda menurut letak geografis. Wilayah tropis seperti sebagian besar Indonesia umumnya mengenal musim hujan dan kemarau, bukan empat musim seperti di wilayah beriklim sedang.</p><div class="facts"><div class="fact"><b>Daerah tropis</b><small>contoh: sebagian besar Indonesia</small></div><div class="fact"><b>Hujan</b><small>salah satu pola musiman</small></div><div class="fact"><b>Kemarau</b><small>salah satu pola musiman</small></div></div></div><div class="panel"><h3>🧠 Cek miskonsepsi</h3><p class="muted">❌ “Musim terjadi hanya karena jarak Bumi ke Matahari.”</p><p class="muted">✅ Lebih tepat: kemiringan sumbu dan revolusi memengaruhi sudut serta lama penyinaran.</p></div></div><div class="nav-bottom"><span class="muted">Hubungkan model dengan pengalaman cuaca di lingkunganmu.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(10)">Selanjutnya →</button></div></div></div></section>
+
+<section id="m10" class="screen slide" data-index="10"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 10 / 12</div><h2>Model bukan <span class="grad">Skala Nyata</span></h2></div><span class="pill">AMATI DENGAN KRITIS</span></div><div class="content-grid"><div class="panel"><h3>🔎 Mengapa gambar tidak sesuai ukuran asli?</h3><p class="muted">Jika ukuran dan jarak sebenarnya digunakan, tata surya akan sangat sulit ditampilkan di layar. Karena itu model dibuat agar hubungan dan urutan mudah dipahami.</p><div class="callout" style="padding:14px;border-left:3px solid var(--yellow);background:#ffd96a08;border-radius:10px">Catatan: ukuran/jarak pada model visual <b>tidak selalu berskala</b>.</div></div><div class="panel"><h3>👀 Keterampilan ilmiah</h3><div class="facts"><div class="fact"><b>Amati</b><small>apa yang terlihat?</small></div><div class="fact"><b>Bandingkan</b><small>apa yang berbeda?</small></div><div class="fact"><b>Jelaskan</b><small>mengapa bisa begitu?</small></div></div></div></div><div class="nav-bottom"><span class="muted">Media digital membantu berpikir; bukan pengganti diskusi dan pengamatan nyata.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(11)">Selanjutnya →</button></div></div></div></section>
+
+<section id="m11" class="screen slide" data-index="11"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 11 / 12</div><h2>Misi <span class="grad">Pengamatan</span></h2></div><span class="pill">AKTIFKAN OTAK</span></div><div class="content-grid"><div class="panel"><h3>🧪 Tantangan mini</h3><p class="muted">Bayangkan kamu memakai bola sebagai Bumi dan senter sebagai Matahari.</p><div class="facts"><div class="fact"><b>1</b><small>senter = Matahari</small></div><div class="fact"><b>2</b><small>bola = Bumi</small></div><div class="fact"><b>3</b><small>putar bola perlahan</small></div></div><p class="muted" style="margin-top:15px">Amati bagian yang terkena cahaya dan bagian yang tidak terkena cahaya langsung.</p></div><div class="panel"><h3>📝 Catat kesimpulan</h3><p class="muted">“Saat Bumi berputar, bagian yang menghadap Matahari mengalami ______, sedangkan bagian yang membelakangi mengalami ______.”</p><div class="actions"><button class="btn secondary" onclick="speak('Saat Bumi berputar, bagian yang menghadap Matahari mengalami siang, sedangkan bagian yang membelakangi mengalami malam.')">🔊 Dengarkan</button></div></div></div><div class="nav-bottom"><span class="muted">Kegiatan model nyata bola + senter juga dapat digunakan saat perangkat terbatas.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(12)">Selanjutnya →</button></div></div></div></section>
+
+<section id="m12" class="screen slide" data-index="12"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">MATERI 12 / 12</div><h2>Siap untuk <span class="grad">Final Challenge?</span></h2></div><span class="pill">10 SLIDE KUIS</span></div><div class="content-grid"><div class="panel"><h3>🎯 Sebelum mulai</h3><div class="facts"><div class="fact"><b>☀️ Tata Surya</b><small>8 planet berurutan</small></div><div class="fact"><b>🔄 Rotasi</b><small>≈ 24 jam</small></div><div class="fact"><b>🌍 Revolusi</b><small>≈ 365¼ hari</small></div><div class="fact"><b>🌦️ Musim</b><small>kemiringan + revolusi</small></div></div><div class="actions"><button class="btn primary" onclick="go(13)">🎯 Mulai Kuis 10 Slide</button></div></div><div class="panel"><h3>🔊 Fitur suara</h3><p class="muted">Gunakan ikon 🔊 di bagian atas untuk menyalakan/mematikan efek. Pada pertanyaan kuis tersedia tombol untuk membacakan pertanyaan.</p><button class="btn ghost" onclick="speak('Selamat datang di Final Challenge ORBITA. Jawab sepuluh pertanyaan dengan teliti.')">🔊 Coba suara</button></div></div><div class="nav-bottom"><span class="muted">Kamu selalu bisa menekan ⌂ untuk kembali ke Home.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button><button class="btn primary" onclick="go(13)">Masuk Kuis →</button></div></div></div></section>
+
+<!-- QUIZ SLIDES -->
+<section id="quiz" class="screen slide"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">FINAL CHALLENGE</div><h2 id="quizTitle">Kuis <span class="grad">10 Slide</span></h2></div><span class="pill" id="qCounter">SLIDE 1 / 10</span></div><div class="quiz-wrap"><aside class="quiz-side"><div class="score-card"><div class="eyebrow">SKOR</div><div class="score" id="score">0</div><div class="muted">dari 100 poin</div><div class="timeline" id="timeline"></div></div><div class="score-card"><div class="eyebrow">LENCANA</div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px"><span class="badge" id="b1">🌟 Penjelajah</span><span class="badge" id="b2">🪐 Ahli Planet</span><span class="badge" id="b3">🚀 Master</span></div></div></aside><div class="q-card" id="qCard"><div class="q-top"><span id="qNum">PERTANYAAN 1</span><span>+10 POIN</span></div><h3 id="qText"></h3><button class="btn ghost" style="align-self:flex-start" onclick="readQuestion()">🔊 Bacakan Pertanyaan</button><div class="options" id="options"></div><div class="feedback" id="feedback"></div><div class="quiz-nav"><button class="btn ghost" type="button" id="homeQuizBtn">⌂ Home</button><div class="next-zone"><div id="nextHint" class="next-hint">Jawab soal untuk membuka tombol lanjut</div><button id="nextQ" class="next-icon" type="button" disabled aria-disabled="true" aria-label="Lanjut ke soal berikutnya" title="Lanjut ke soal berikutnya"><span>➜</span></button></div></div></div></div></div></section>
+
+<section id="result" class="screen slide"><div class="wrap slide-inner center"><div class="result"><div class="eyebrow">MISSION COMPLETE</div><div style="font-size:4rem;margin:10px">🏆</div><h2>Hebat, <span class="grad" id="resultName">Kadet</span>!</h2><p class="muted">Kamu telah menyelesaikan 10 slide Kuis ORBITA.</p><div class="big" id="resultScore">0 / 100</div><p id="resultMessage" class="muted"></p><div class="actions" style="justify-content:center"><button class="btn primary" onclick="saveResult()">☁ Kirim Ulang Nilai</button><button class="btn secondary" onclick="go(13);resetQuiz()">↻ Ulangi</button><button class="btn ghost" onclick="goHome()">⌂ Home</button></div><div class="mini-note" id="saveStatus">Nilai akan dikirim otomatis ke database guru. Jika internet bermasalah, gunakan tombol Kirim Ulang Nilai.</div></div></div></section>
+
+<!-- TEACHER -->
+<section id="teacher" class="screen slide"><div class="wrap slide-inner"><div class="slide-head"><div><div class="eyebrow">TEACHER CONTROL</div><h2>Kontrol <span class="grad">Guru</span></h2></div><span class="pill">REKAP NILAI</span></div><div class="teacher-grid"><div class="teacher-panel"><h3>⚙️ Pengaturan rekap</h3><p class="muted">Mode guru menampilkan hasil yang tersimpan pada perangkat ini dan dapat mengirim hasil ke Google Apps Script agar rekap dapat dikumpulkan dari banyak siswa.</p><div class="field"><label>PIN Guru (lokal)</label><input id="teacherPin" type="password" placeholder="Buat PIN 4–8 digit"></div><div class="field"><label>Database Nilai ORBITA (terhubung otomatis)</label><input id="endpoint" placeholder="Terhubung otomatis ke Google Sheets"></div><div class="actions"><button class="btn primary" onclick="saveTeacherSettings()">💾 Simpan Pengaturan</button><button class="btn ghost" onclick="testEndpoint()">🔌 Tes Koneksi</button></div><div class="teacher-note" style="margin-top:14px">Catatan: Nilai siswa dikirim otomatis ke Google Sheets melalui database ORBITA. Mode Guru dapat memuat rekap dari semua perangkat. Nama siswa yang digunakan sebaiknya nama panggilan/inisial, bukan data pribadi yang tidak diperlukan.</div><div class="actions"><button class="btn danger" onclick="clearLocalResults()">🗑 Hapus Rekap Lokal</button><button class="btn ghost" onclick="exportCSV()">⬇ Export CSV</button></div></div><div class="teacher-panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><h3 style="margin-bottom:4px">📊 Rekap Nilai</h3><div class="muted" id="resultCount">0 hasil</div></div><button class="btn ghost" onclick="renderTeacher()">↻ Refresh</button></div><div class="table-wrap" style="margin-top:14px"><table class="table"><thead><tr><th>Nama</th><th>Skor</th><th>Tanggal</th><th>ID</th></tr></thead><tbody id="resultsBody"></tbody></table></div></div></div><div class="nav-bottom"><span class="muted">⌂ kembali ke Home • Data lokal hanya terlihat pada browser/perangkat yang sama.</span><div class="right"><button class="btn ghost" onclick="goHome()">⌂ Home</button></div></div></div></section>
+</div>
+
+<div id="modal" class="modal"><div class="modal-card"><button class="btn ghost" style="float:right" onclick="closeModal()">✕</button><div class="eyebrow" id="modalEyebrow">ORBITA</div><h2 id="modalTitle"></h2><p id="modalText" class="muted"></p></div></div>
+
+<script>
+const slides=['home','m1','m2','m3','m4','m5','m6','m7','m8','m9','m10','m11','m12','quiz','result','teacher'];
+const quiz=[
+['Planet yang paling dekat dengan Matahari adalah …',['Venus','Merkurius','Bumi','Mars'],1,'Merkurius berada pada urutan pertama dari Matahari.'],
+['Urutan planet yang benar dari Matahari adalah …',['Merkurius–Venus–Bumi–Mars–Jupiter–Saturnus–Uranus–Neptunus','Venus–Merkurius–Bumi–Mars–Jupiter–Uranus–Saturnus–Neptunus','Merkurius–Bumi–Venus–Mars–Jupiter–Saturnus–Uranus–Neptunus','Merkurius–Venus–Mars–Bumi–Jupiter–Saturnus–Uranus–Neptunus'],0,'Urutannya adalah Merkurius, Venus, Bumi, Mars, Jupiter, Saturnus, Uranus, Neptunus.'],
+['Rotasi Bumi adalah …',['Bumi mengelilingi Matahari','Bumi berputar pada porosnya','Bulan mengelilingi Bumi','Matahari mengelilingi Bumi'],1,'Rotasi berarti Bumi berputar pada porosnya.'],
+['Satu rotasi Bumi berlangsung sekitar …',['12 jam','24 jam','30 hari','365¼ hari'],1,'Satu rotasi berlangsung sekitar 24 jam.'],
+['Pergantian siang dan malam terutama terjadi karena …',['Bumi berotasi','Matahari mengelilingi Bumi','Bumi berhenti bergerak','Bulan mengelilingi Matahari'],0,'Bagian Bumi bergantian menghadap dan membelakangi Matahari karena rotasi.'],
+['Revolusi Bumi adalah …',['Bumi berputar pada porosnya','Bumi mengelilingi Matahari pada orbitnya','Matahari mengelilingi Bumi','Bulan mengelilingi Matahari'],1,'Revolusi adalah gerak Bumi mengelilingi Matahari pada orbitnya.'],
+['Satu kali revolusi Bumi berlangsung sekitar …',['24 jam','7 hari','30 hari','365¼ hari'],3,'Satu revolusi sekitar 365¼ hari dan menjadi dasar satu tahun.'],
+['Rotasi dan revolusi Bumi …',['gerak yang sama','berlangsung bersamaan tetapi berbeda jenis gerak','hanya rotasi yang terjadi','hanya revolusi yang terjadi'],1,'Keduanya berlangsung bersamaan, tetapi jenis geraknya berbeda.'],
+['Perubahan musim di banyak wilayah terutama berkaitan dengan …',['kemiringan sumbu Bumi dan revolusinya','Bumi berhenti berotasi','Matahari mengelilingi Bumi','jarak Bumi ke Matahari saja'],0,'Kemiringan sumbu dan revolusi berhubungan dengan perubahan sudut dan lama penyinaran sepanjang tahun.'],
+['Pernyataan yang tepat tentang model tata surya adalah …',['selalu sama persis dengan ukuran sebenarnya','ukuran dan jarak pada model tidak selalu berskala','semua planet harus berukuran sama','semua planet harus diam'],1,'Model visual membantu memahami konsep, tetapi ukuran dan jaraknya tidak selalu berskala.']
+];
+let name=localStorage.getItem('orbita_name')||'';let current=0,qIndex=0,score=0,answered=false,soundOn=true,rotationOn=false,rotAngle=0,orbitOn=false,orbitAngle=0;
+const $=id=>document.getElementById(id);
+function startMission(){name=($('nameInput').value.trim()||'Kadet ORBITA').slice(0,30);localStorage.setItem('orbita_name',name);$('intro').classList.remove('active');$('app').classList.remove('hidden');$('cadetName').textContent=name;$('homeName').textContent=name;play('start');goHome()}
+function demoMode(){$('nameInput').value='Kadet Demo';startMission()}
+function goHome(){go(0)}
+function go(i){if(i<0)i=0;if(i>=slides.length)i=slides.length-1;const prev=document.querySelector('.screen.active');const next=$(slides[i]);if(!next)return;if(prev&&prev!==next){prev.classList.add('exit');setTimeout(()=>prev.classList.remove('exit'),500)}document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));next.classList.add('active');current=i;updateProgress();if(i===13)renderQuiz();if(i===15)renderTeacher();play('nav')}
+function updateProgress(){let pct=0;if(current>=1&&current<=12)pct=(current/12)*100;else if(current===13)pct=100;else if(current===14)pct=100;else pct=0;$('progressBar').style.width=pct+'%'}
+function planetInfo(t,x){$('modalEyebrow').textContent='STUDIO PLANET';$('modalTitle').textContent=t;$('modalText').textContent=x;$('modal').classList.add('open');play('click')}
+function openHelp(){$('modalEyebrow').textContent='BANTUAN';$('modalTitle').textContent='Navigasi ORBITA';$('modalText').textContent='Gunakan Selanjutnya untuk maju satu slide. Tombol ⌂ selalu kembali ke Home. Tombol 🔊 mengatur suara. Ikon ♙ membuka Mode Guru. Panah kiri/kanan pada keyboard juga dapat digunakan.';$('modal').classList.add('open')}
+function closeModal(){$('modal').classList.remove('open')}
+function toggleSound(){soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)play('click')}
+function play(type){if(!soundOn)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const c=window._ac||(window._ac=new C());const o=c.createOscillator(),g=c.createGain();o.type='sine';const f={click:560,nav:430,start:660,correct:880,wrong:180,done:1040}[type]||440;o.frequency.value=f;g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.06,c.currentTime+.01);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.13);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.14)}catch(e){}}
+function speak(text){if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='id-ID';u.rate=.95;u.pitch=1;speechSynthesis.speak(u)}}
+function toggleRotation(){rotationOn=!rotationOn;$('rotBtn').textContent=rotationOn?'⏸ Jeda Putaran':'▶ Putar Bumi';if(rotationOn)requestAnimationFrame(rotLoop);play('click')}
+function rotLoop(){if(!rotationOn)return;rotAngle+=1.8;$('rotEarth').style.transform=`translate(-50%,-50%) rotate(${rotAngle}deg)`;requestAnimationFrame(rotLoop)}
+function resetRotation(){rotationOn=false;rotAngle=0;$('rotEarth').style.transform='translate(-50%,-50%)';$('rotBtn').textContent='▶ Putar Bumi'}
+function toggleOrbit(){orbitOn=!orbitOn;$('orbBtn').textContent=orbitOn?'⏸ Jeda Orbit':'▶ Jalankan Orbit';if(orbitOn)requestAnimationFrame(orbLoop);play('click')}
+function orbLoop(){if(!orbitOn)return;orbitAngle+=.45;const r=33,x=50+Math.cos(orbitAngle*Math.PI/180)*r,y=50+Math.sin(orbitAngle*Math.PI/180)*29;$('orbitEarth').style.left=x+'%';$('orbitEarth').style.top=y+'%';requestAnimationFrame(orbLoop)}
+function resetOrbit(){orbitOn=false;orbitAngle=0;$('orbitEarth').style.left='13%';$('orbitEarth').style.top='38%';$('orbBtn').textContent='▶ Jalankan Orbit'}
+function renderQuiz(){answered=false;const q=quiz[qIndex];$('qCounter').textContent=`SLIDE ${qIndex+1} / 10`;$('qNum').textContent=`PERTANYAAN ${qIndex+1}`;$('qText').textContent=q[0];$('feedback').className='feedback';$('feedback').textContent='';const next=$('nextQ');next.disabled=true;next.classList.remove('ready');next.setAttribute('aria-disabled','true');next.querySelector('span').textContent='➜';$('nextHint').textContent='Jawab dulu, lalu tekan panah';const box=$('options');box.innerHTML='';q[1].forEach((v,i)=>{const b=document.createElement('button');b.type='button';b.className='option';b.textContent=String.fromCharCode(65+i)+'. '+v;b.onclick=()=>answerQuestion(i,b);box.appendChild(b)});renderTimeline();$('score').textContent=score;}
+function renderTimeline(){const t=$('timeline');t.innerHTML='';for(let i=0;i<10;i++){const x=document.createElement('i');x.className=i<qIndex?'on':'';x.style.height='7px';x.style.flex='1';x.style.borderRadius='99px';x.style.background=i<qIndex?'linear-gradient(90deg,var(--cyan),var(--violet))':'#fff1';t.appendChild(x)}}
+function answerQuestion(i,b){if(answered)return;answered=true;const q=quiz[qIndex];document.querySelectorAll('.option').forEach((o,j)=>{o.disabled=true;if(j===q[2])o.classList.add('correct')});const fb=$('feedback');if(i===q[2]){score+=10;b.classList.add('correct');fb.innerHTML='✨ <b>Benar!</b> '+q[3];fb.style.background='#70f0aa12';fb.style.color='#caffdf';play('correct')}else{b.classList.add('wrong');fb.innerHTML='💡 <b>Belum tepat.</b> '+q[3];fb.style.background='#ff708812';fb.style.color='#ffd5dc';play('wrong')}fb.classList.add('show');$('score').textContent=score;const next=$('nextQ');next.disabled=false;next.classList.add('ready');next.setAttribute('aria-disabled','false');next.querySelector('span').textContent=(qIndex<9)?'➜':'🏆';$('nextHint').textContent=(qIndex<9)?('Lanjut ke soal '+(qIndex+2)):'Selesai & lihat nilai';updateBadges();renderTimeline();setTimeout(()=>next.focus(),50);}
+function updateBadges(){if(score>=30)$('b1').classList.add('on');if(score>=60)$('b2').classList.add('on');if(score>=80)$('b3').classList.add('on')}
+function nextQuestion(){if(!answered){$('nextHint').textContent='⚠️ Jawab soal ini terlebih dahulu';return;}const next=$('nextQ');next.disabled=true;next.classList.remove('ready');if(qIndex<9){qIndex+=1;renderQuiz();play('nav');}else{finishQuiz();}}
+async function finishQuiz(){localStorage.setItem('orbita_last_score',score);const result={name,score,date:new Date().toISOString(),id:'ORB-'+Date.now().toString(36).toUpperCase(),device:/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)?'HP':'Laptop/PC',userAgent:navigator.userAgent};const arr=JSON.parse(localStorage.getItem('orbita_results')||'[]');arr.push(result);localStorage.setItem('orbita_results',JSON.stringify(arr));$('resultName').textContent=name;$('resultScore').textContent=score+' / 100';$('resultMessage').textContent=score>=90?'Luar biasa! Kamu sangat siap menjadi Master ORBITA.':score>=70?'Bagus! Tinggal sedikit lagi menuju Master ORBITA.':'Tetap semangat! Ulangi materi dan coba lagi.';go(14);play('done');setTimeout(()=>sendResult(result),120)}
+function resetQuiz(){qIndex=0;score=0;answered=false;$('b1').classList.remove('on');$('b2').classList.remove('on');$('b3').classList.remove('on');renderQuiz()}
+function readQuestion(){speak(quiz[qIndex][0]);play('click')}
+function openTeacher(){const pin=localStorage.getItem('orbita_teacher_pin');if(pin){const entered=prompt('Masukkan PIN Guru');if(entered!==pin){alert('PIN salah.');return}}else{alert('Mode Guru pertama kali dibuka. Silakan buat PIN pada panel.');}go(15)}
+function saveTeacherSettings(){const pin=$('teacherPin').value.trim();const endpoint=$('endpoint').value.trim()||'https://script.google.com/macros/s/AKfycbzytlRYWum4LjBvX5L3NQZXY3qkm0v6cPVl01tFbAH2E0DPds9gGuJr4miRPj-IKnGb0A/exec';if(pin)localStorage.setItem('orbita_teacher_pin',pin);localStorage.setItem('orbita_endpoint',endpoint);alert('Pengaturan tersimpan. Database nilai ORBITA sudah terhubung.');renderTeacher()}
+async function renderTeacher(){const local=JSON.parse(localStorage.getItem('orbita_results')||'[]');let arr=local;const endpoint=localStorage.getItem('orbita_endpoint')||'"+ENDPOINT+"';localStorage.setItem('orbita_endpoint',endpoint);$('endpoint').value=endpoint;const pending=localStorage.getItem('orbita_pending_result');if(pending){try{await sendResult(JSON.parse(pending));localStorage.removeItem('orbita_pending_result')}catch(e){}}if(endpoint){try{const r=await fetch(endpoint,{method:'GET',cache:'no-store'});const remote=await r.json();if(Array.isArray(remote))arr=remote.concat(local).filter((v,i,a)=>i===a.findIndex(x=>x.id===v.id));$('saveStatus')&&($('saveStatus').textContent='☁ Terhubung ke database guru.')}catch(e){}}arr=arr.slice().sort((a,b)=>new Date(b.date)-new Date(a.date));$('resultCount').textContent=arr.length+' hasil';$('resultsBody').innerHTML=arr.map(r=>`<tr><td>${escapeHtml(r.name)}</td><td><b>${r.score}</b>/100</td><td>${new Date(r.date).toLocaleString('id-ID')}</td><td>${r.id}</td></tr>`).join('')||'<tr><td colspan="4" class="muted">Belum ada hasil.</td></tr>'}
+function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function clearLocalResults(){if(confirm('Hapus semua rekap lokal di perangkat ini?')){localStorage.removeItem('orbita_results');renderTeacher()}}
+function exportCSV(){const arr=JSON.parse(localStorage.getItem('orbita_results')||'[]');if(!arr.length){alert('Belum ada hasil.');return}const csv='Nama,Skor,Tanggal,ID\n'+arr.map(r=>`"${String(r.name).replace(/"/g,'""')}",${r.score},"${new Date(r.date).toLocaleString('id-ID')}",${r.id}`).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='rekap_orbita.csv';a.click();URL.revokeObjectURL(a.href)}
+async function testEndpoint(){const url=$('endpoint').value.trim();if(!url){alert('Isi URL Google Apps Script terlebih dahulu.');return}try{const r=await fetch(url,{method:'GET'});alert('Koneksi berhasil. Respons: '+(await r.text()).slice(0,180))}catch(e){alert('Tes koneksi gagal. Pastikan URL Web App benar dan aksesnya sesuai.')}}
+async function sendResult(result){const endpoint=localStorage.getItem('orbita_endpoint')||'"+ENDPOINT+"';if(!endpoint){$('saveStatus').textContent='Nilai tersimpan lokal.';return false}localStorage.setItem('orbita_endpoint',endpoint);try{await fetch(endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(result)});$('saveStatus').textContent='☁ Nilai tersimpan otomatis ke database guru.';play('done');return true}catch(e){$('saveStatus').textContent='⚠️ Internet/Server belum merespons. Nilai aman tersimpan di perangkat; tekan "Kirim Ulang" saat online.';localStorage.setItem('orbita_pending_result',JSON.stringify(result));return false}}
+async function saveResult(){const last=JSON.parse(localStorage.getItem('orbita_results')||'[]').slice(-1)[0];if(!last){$('saveStatus').textContent='Belum ada hasil kuis.';return}await sendResult(last)}
+$('nextQ').addEventListener('click',function(e){e.preventDefault();e.stopPropagation();nextQuestion();});$('homeQuizBtn').addEventListener('click',function(e){e.preventDefault();goHome();});
+window.addEventListener('keydown',e=>{if($('modal').classList.contains('open')){if(e.key==='Escape')closeModal();return}if(!$('app').classList.contains('hidden')){if(e.key==='ArrowRight'){if(current===13){e.preventDefault();nextQuestion();}else if(current>=1&&current<=12){e.preventDefault();go(current+1);}else if(current===0){e.preventDefault();go(1);}}if(e.key==='ArrowLeft'){if(current===13){e.preventDefault();if(qIndex>0){qIndex-=1;renderQuiz();}else{goHome();}}else if(current>=2&&current<=13){e.preventDefault();go(current-1);}else if(current===1){e.preventDefault();goHome();}}}});
+
+// ORBITA cloud score connection (preconfigured)
+localStorage.setItem('orbita_endpoint','"+ENDPOINT+"');
+window.addEventListener('online',()=>{const p=localStorage.getItem('orbita_pending_result');if(p)sendResult(JSON.parse(p)).then(ok=>{if(ok)localStorage.removeItem('orbita_pending_result')})});
+</script>
+</body>
+</html>
